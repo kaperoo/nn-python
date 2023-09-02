@@ -12,3 +12,13 @@ class Layer:
 
     def __repr__(self):
         return str(self.nodes)
+    
+    def getNodes(self):
+        return self.nodes
+    
+    def feedForward(self, activations):
+        new_activations = np.array([])
+        for node in self.nodes:
+            new_activations = np.append(new_activations, node.feedForward(activations))
+
+        return new_activations

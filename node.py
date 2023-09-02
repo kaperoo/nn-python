@@ -11,12 +11,12 @@ class Node:
     def getValue(self):
         return self.value
 
-    def calculate_value(self):
+    def feedForward(self, activations):
         self.value = 0
-        for i in self.parents:
-            self.value += i.getValue * self.weights[i]
-        self.value += self.bias
-        self.value = sigmoid(self.value)
+        for i, act in enumerate(activations):
+            self.value += act * self.weights[i]
+        self.value = sigmoid(self.value + self.bias)
+        return self.value
 
     def __repr__(self):
         return str(self.value)

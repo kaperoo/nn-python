@@ -15,3 +15,9 @@ class Network:
             if i == 0:
                 continue
             self.network = np.append(self.network, Layer(counts, shape[i-1]))
+    
+    def feedForward(self, inputs):
+        activations = inputs
+        for layer in self.network:
+            activations = layer.feedForward(activations)
+        return activations
