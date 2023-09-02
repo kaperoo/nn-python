@@ -1,1 +1,2 @@
-"Neural Network in Python from scratch" 
+## Neural Network in Python from scratch
+
