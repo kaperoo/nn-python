@@ -9,9 +9,6 @@ class Layer:
         self.nodes = np.array([])
         for _ in range(size):
             self.nodes = np.append(self.nodes, Node(np.random.normal(0.0, 1.0, n_parents), np.random.normal(0.0, 1.0)))
-
-    def __repr__(self):
-        return str(self.nodes)
     
     def getNodes(self):
         return self.nodes
@@ -20,5 +17,11 @@ class Layer:
         new_activations = np.array([])
         for node in self.nodes:
             new_activations = np.append(new_activations, node.feedForward(activations))
-
         return new_activations
+
+    def backPropagate(self, learning_rate, error):
+        for node in self.nodes:
+            node.backPropagate(learning_rate, error)
+
+    def __repr__(self):
+        return str(self.nodes)

@@ -1,6 +1,7 @@
 # Neural Network class
 from layer import Layer
 import numpy as np
+from functions import mse
 
 class Network:
     def __init__(self, shape):
@@ -21,3 +22,7 @@ class Network:
         for layer in self.network:
             activations = layer.feedForward(activations)
         return activations
+    
+    def backPropagate(self, learning_rate, error):
+        for layer in reversed(self.network):
+            layer.backPropagate(learning_rate, error)
