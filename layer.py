@@ -19,9 +19,5 @@ class Layer:
             new_activations = np.append(new_activations, node.feedForward(activations))
         return new_activations
 
-    def backPropagate(self, learning_rate, error):
-        for node in self.nodes:
-            node.backPropagate(learning_rate, error)
-
     def __repr__(self):
         return str(self.nodes)

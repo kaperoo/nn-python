@@ -2,4 +2,4 @@
 import numpy as np
 
 def mse(y, y_hat):
-    return np.square(np.subtract(y, y_hat)).mean()
+    return np.square(np.subtract(y, y_hat))
