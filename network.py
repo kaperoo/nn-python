@@ -47,12 +47,22 @@ class Network:
 
         for i, layer in enumerate(reversed(self.network)):
             node_e_values = np.zeros(layer.n_parents)
+            node_b_values = []
+            node_w_values = []
             for j, node in enumerate(layer.getNodes()):
-                new_biases.append(node.get_d_bias(der_errors[-1][j]))
-                new_weights.append(node.get_d_weights(der_errors[-1][j]))
-
+                node_b_values.append(node.get_d_bias(der_errors[-1][j]))
+                node_w_values.append(node.get_d_weights(der_errors[-1][j]))
                 node_e_values = np.add(node_e_values, node.get_d_error(der_errors[-1][j]))
 
+            new_weights.append(node_w_values)
+            new_biases.append(node_b_values)
             der_errors.append(node_e_values)
 
         return (new_weights, new_biases)
+    
+    def updateWeightsAndBiases(self, weights, biases, learning_rate):
+        for i, layer in enumerate(reversed(self.network)):
+            for j, node in enumerate(layer.getNodes()):
+                node.weights = np.subtract(node.weights, np.multiply(weights[i][j], learning_rate))
+                node.bias = np.subtract(node.bias, np.multiply(biases[i][j], learning_rate))
+            
