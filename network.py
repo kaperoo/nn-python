@@ -3,6 +3,7 @@ from layer import Layer
 import numpy as np
 from loss import MSE
 
+
 class Network:
     def __init__(self, shape, loss_fn=MSE()):
         self.input_nodes = shape[0]
@@ -19,8 +20,8 @@ class Network:
         for i, counts in enumerate(shape):
             if i == 0:
                 continue
-            self.network = np.append(self.network, Layer(counts, shape[i-1]))
-    
+            self.network = np.append(self.network, Layer(counts, shape[i - 1]))
+
     def feedForward(self, inputs):
         if len(inputs) != self.input_nodes:
             raise Exception("Input length does not match input nodes")
@@ -29,14 +30,14 @@ class Network:
             activations = layer.feedForward(activations)
         self.result = activations
         return activations
-    
+
     def calculateError(self, y_hat):
         if self.result is None:
             raise Exception("Network has not been fed forward yet")
         self.error = self.loss_fn.calculateError(y_hat, self.result)
         self.d_error = self.loss_fn.derivativeError(y_hat, self.result)
         return self.loss_fn.calculateError(y_hat, self.result)
-    
+
     def backPropagate(self, learning_rate):
         if self.result is None or self.error is None:
             raise Exception("Network has not been fed forward yet")
@@ -52,17 +53,22 @@ class Network:
             for j, node in enumerate(layer.getNodes()):
                 node_b_values.append(node.get_d_bias(der_errors[-1][j]))
                 node_w_values.append(node.get_d_weights(der_errors[-1][j]))
-                node_e_values = np.add(node_e_values, node.get_d_error(der_errors[-1][j]))
+                node_e_values = np.add(
+                    node_e_values, node.get_d_error(der_errors[-1][j])
+                )
 
             new_weights.append(node_w_values)
             new_biases.append(node_b_values)
             der_errors.append(node_e_values)
 
         return (new_weights, new_biases)
-    
+
     def updateWeightsAndBiases(self, weights, biases, learning_rate):
         for i, layer in enumerate(reversed(self.network)):
             for j, node in enumerate(layer.getNodes()):
-                node.weights = np.subtract(node.weights, np.multiply(weights[i][j], learning_rate))
-                node.bias = np.subtract(node.bias, np.multiply(biases[i][j], learning_rate))
-            
+                node.weights = np.subtract(
+                    node.weights, np.multiply(weights[i][j], learning_rate)
+                )
+                node.bias = np.subtract(
+                    node.bias, np.multiply(biases[i][j], learning_rate)
+                )

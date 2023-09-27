@@ -2,6 +2,7 @@
 import numpy as np
 from functions import sigmoid
 
+
 class Node:
     def __init__(self, weights, bias):
         self.weights = weights
@@ -12,7 +13,7 @@ class Node:
 
     def getValue(self):
         return self.value
-    
+
     def getWeights(self):
         return self.weights
 
@@ -24,15 +25,17 @@ class Node:
         self.z = self.value + self.bias
         self.value = sigmoid(self.value + self.bias)
         return self.value
-    
+
     def get_d_weights(self, error):
-        return np.multiply(error, np.multiply((self.value * (1 - self.value)), self.activations))
+        return np.multiply(
+            error, np.multiply((self.value * (1 - self.value)), self.activations)
+        )
         # for act in self.activations:
         #     yield error * (self.value * (1 - self.value)) * act
-    
+
     def get_d_bias(self, error):
         return np.multiply(error, (self.value * (1 - self.value)))
-    
+
     def get_d_error(self, error):
         return np.multiply(error, (self.value * (1 - self.value)) * self.weights)
         # for weight in self.weights:
@@ -40,4 +43,3 @@ class Node:
 
     def __repr__(self):
         return str(self.value)
-        
