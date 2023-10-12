@@ -1,4 +1,6 @@
 nnenv 
 __pycache__
-test.*
+test*.*
 .vscode
+mnist
+mnist.py

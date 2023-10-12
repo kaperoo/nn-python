@@ -17,6 +17,15 @@ class Network:
         self.loss_fn = loss_fn
         self.network = np.array([])
 
+        # calc num of weights and biases
+        self.num_weights = 0
+        self.num_biases = 0
+        for i, counts in enumerate(shape):
+            if i == 0:
+                continue
+            self.num_weights += counts * shape[i - 1]
+            self.num_biases += counts
+
         for i, counts in enumerate(shape):
             if i == 0:
                 continue
@@ -43,28 +52,20 @@ class Network:
             raise Exception("Network has not been fed forward yet")
 
         der_errors = [self.d_error.copy()]
-        # new_weights = []
-        # new_biases = []
         new_weights = np.array([])
         new_biases = np.array([])
 
         for layer in reversed(self.network):
             node_e_values = np.zeros(layer.n_parents)
-            # node_b_values = []
-            # node_w_values = []
             for j, node in enumerate(layer.getNodes()):
                 new_weights = np.append(
                     new_weights, node.get_d_weights(der_errors[-1][j])
                 )
                 new_biases = np.append(new_biases, node.get_d_bias(der_errors[-1][j]))
-                # node_b_values.append(node.get_d_bias(der_errors[-1][j]))
-                # node_w_values.append(node.get_d_weights(der_errors[-1][j]))
                 node_e_values = np.add(
                     node_e_values, node.get_d_error(der_errors[-1][j])
                 )
 
-            # new_weights.append(node_w_values)
-            # new_biases.append(node_b_values)
             der_errors.append(node_e_values)
 
         return (new_weights, new_biases)
@@ -79,3 +80,9 @@ class Network:
                     node.weights, np.multiply(new_w, learning_rate)
                 )
                 node.bias = np.subtract(node.bias, np.multiply(new_b, learning_rate))
+
+    def save_model(self, filename):
+        np.save(filename, self.network)
+
+    def load_model(self, filename):
+        self.network = np.load(filename, allow_pickle=True)
