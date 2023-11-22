@@ -81,8 +81,30 @@ class Network:
                 )
                 node.bias = np.subtract(node.bias, np.multiply(new_b, learning_rate))
 
+    def getWeightsAndBiases(self):
+        weights = np.array([])
+        biases = np.array([])
+        for layer in self.network:
+            for node in layer.getNodes():
+                weights = np.append(weights, node.weights)
+                biases = np.append(biases, node.bias)
+        return (weights, biases)
+
+    def loadWeightsAndBiases(self, weights, biases):
+        for layer in self.network:
+            for node in layer.getNodes():
+                _, new_w, weights = np.split(weights, [0, node.weights.size])
+                _, new_b, biases = np.split(biases, [0, 1])
+
+                node.weights = new_w
+                node.bias = new_b
+
     def save_model(self, filename):
-        np.save(filename, self.network)
+        weights, biases = self.getWeightsAndBiases()
+        np.savez_compressed(filename, weights=weights, biases=biases)
 
     def load_model(self, filename):
-        self.network = np.load(filename, allow_pickle=True)
+        data = np.load(filename)
+        weights = data["weights"]
+        biases = data["biases"]
+        self.loadWeightsAndBiases(weights, biases)
